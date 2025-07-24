@@ -18,7 +18,7 @@ export default function Page() {
   useEffect(() => {
     const fetchCarListings = async () => {
       try {
-        const res = await fetch("/api/Listings");
+        const res = await fetch("/api/Listings/GetListings");
         const data = await res.json();
         setCarData(data);
         setSortedCars(data);
