@@ -20,6 +20,14 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 export default function PaymentPage() {
   const item = useSelector((state) => state.listings.item);
 
+  if (!item) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-xl text-gray-400">No payment details available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white py-5 pb-20 px-4">
       <motion.div
