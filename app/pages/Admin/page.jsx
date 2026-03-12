@@ -51,21 +51,24 @@ export default function AdminPanel() {
   };
 
   const handleDeleteCar = async (id) => {
-    if (!confirm("Are you sure you want to delete this car?")) return;
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this car?",
+    );
+    if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`/api/Listings/${id}`, {
-        method: "DELETE",
-      });
-
+      const res = await fetch(`/api/Delete_Car/${id}`, { method: "DELETE" });
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || "Delete failed");
 
-      setListings((prev) => prev.filter((car) => car._id !== id));
-      // alert("✅ Car deleted successfully.");
+      if (data.deletedCount === 0)
+        throw new Error("Car not found / not deleted");
+
+      setListings((prev) => prev.filter((car) => car._id.toString() !== id));
+      alert("Car deleted successfully.");
     } catch (error) {
-      alert("❌ Delete failed: " + error.message);
+      alert("Delete failed: " + error.message);
     }
   };
 
@@ -88,7 +91,7 @@ export default function AdminPanel() {
     };
 
     try {
-      const res = await fetch("/api/Listings", {
+      const res = await fetch("/api/FetchData", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -117,7 +120,7 @@ export default function AdminPanel() {
       });
       setOpen(false);
     } catch (err) {
-      setMessage(`❌ ${err.message}`);
+      setMessage(`${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -127,7 +130,7 @@ export default function AdminPanel() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const listingsRes = await fetch("/api/Listings");
+        const listingsRes = await fetch("/api/FetchData");
         const listingsData = await listingsRes.json();
 
         const bookingsRes = await fetch("/api/Booking_Save");
@@ -156,15 +159,15 @@ export default function AdminPanel() {
     switch (activeTab) {
       case "PENDING_BOOKINGS":
         return bookings.filter(
-          (booking) => booking.bookingDetails.status === "pending"
+          (booking) => booking.bookingDetails.status === "pending",
         );
       case "APPROVED_BOOKINGS":
         return bookings.filter(
-          (booking) => booking.bookingDetails.status === "approved"
+          (booking) => booking.bookingDetails.status === "approved",
         );
       case "COMPLETED_BOOKINGS":
         return bookings.filter(
-          (booking) => booking.bookingDetails.status === "completed"
+          (booking) => booking.bookingDetails.status === "completed",
         );
       default:
         return bookings;
@@ -200,8 +203,8 @@ export default function AdminPanel() {
                     status: newStatus,
                   },
                 }
-              : b
-          )
+              : b,
+          ),
         );
       } else {
         setResponseMessage(`❌ ${data.error || "Update failed"}`);
@@ -241,8 +244,8 @@ export default function AdminPanel() {
                     status: newStatus,
                   },
                 }
-              : b
-          )
+              : b,
+          ),
         );
       } else {
         setResponseMessage(`❌ ${data.error || "Update failed"}`);
@@ -367,7 +370,7 @@ export default function AdminPanel() {
                       {
                         bookings.filter(
                           (booking) =>
-                            booking.bookingDetails.status === "pending"
+                            booking.bookingDetails.status === "pending",
                         ).length
                       }{" "}
                       Pending Bookings

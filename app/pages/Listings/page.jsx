@@ -18,10 +18,12 @@ export default function Page() {
   useEffect(() => {
     const fetchCarListings = async () => {
       try {
-        const res = await fetch("/api/Listings/GetListings");
+        const res = await fetch("/api/FetchData");
         const data = await res.json();
         setCarData(data);
         setSortedCars(data);
+
+        console.log("Data Fetched");
       } catch (error) {
         console.error("Failed to fetch car listings", error);
       }
@@ -47,7 +49,7 @@ export default function Page() {
         break;
       case "luxury-premium":
         sorted = sorted.filter((car) =>
-          ["premium", "luxury"].includes(car.luxuryLevel)
+          ["premium", "luxury"].includes(car.luxuryLevel),
         );
         break;
       case "rating":

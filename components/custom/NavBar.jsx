@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -7,9 +7,11 @@ import { Menu, X } from "lucide-react";
 import { LuLoaderPinwheel } from "react-icons/lu";
 import {
   SignUpButton,
+  SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
+  ClerkLoaded,
 } from "@clerk/nextjs";
 
 const navLinks = [
@@ -23,6 +25,12 @@ const navLinks = [
 
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header className="fixed w-full bg-[#1C1F26] text-white shadow-md shadow-black/30 z-50">
@@ -64,24 +72,30 @@ export default function NavBar() {
               </Button>
             </Link>
           ))}
-          <div className="ml-4 flex gap-2">
-            <SignedOut>
-              <Button
-                variant="outline"
-                className="text-white border-green-500 hover:bg-green-600"
-              >
-                Login
-              </Button>
-              <SignUpButton>
-                <Button className="bg-[#4CAF50] hover:bg-[#45A047] text-white">
-                  Sign Up
-                </Button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </div>
+          {mounted && (
+            <div className="ml-4 flex gap-2 items-center">
+              <SignedOut>
+                <SignInButton>
+                  <Button
+                    variant="outline"
+                    className="text-white border-green-500 hover:bg-green-600"
+                  >
+                    Login
+                  </Button>
+                </SignInButton>
+
+                <SignUpButton>
+                  <Button className="bg-[#4CAF50] hover:bg-[#45A047] text-white">
+                    Sign Up
+                  </Button>
+                </SignUpButton>
+              </SignedOut>
+
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu Icon */}
